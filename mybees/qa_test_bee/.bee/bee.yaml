@@ -1,8 +1,8 @@
 schema: bee/v1
 name: qa_test_bee                           # canonical: snake_case, fixed forever
 display_name: QA Test Bee
-version: 1.0.0
-description: When a pod is OOM-killed or crash-looping, finds why and fixes the limit, opens a PR, or files a leak.
+version: 1.1.0
+description: EDITED AFTER INSTALL - pushed after QA Test Bee was added.
 author: { name: Nudgebee }
 
 install:
