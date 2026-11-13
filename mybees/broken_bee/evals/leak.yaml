@@ -1,0 +1,5 @@
+name: Memory climbs between restarts
+trigger: fixtures/oom-sawtooth.json
+expect:
+  verdict: leak
+  runs: [open_leak_ticket]

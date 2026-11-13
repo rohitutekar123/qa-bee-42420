@@ -1,0 +1,52 @@
+# One of the bee's automations: the agent can run it during its run. No risk line: the
+# platform computes the tier from the steps. The rest is today's automation template format.
+# Tier: unrestricted (scm.github.cli runs a script): asks first everywhere unless the admin
+# sets otherwise. A typed pull-request step would be change tier; until one exists this
+# script commits the agent's edited manifest to a new branch and opens a pull request.
+# It never merges.
+summary: Open a pull request that changes a memory limit in the workload's manifest.
+slug: broken_bee__open_limit_pr
+name: "Open a pull request that changes a memory limit"
+description: "Commits the edited manifest file to a new branch and opens a pull request. Never merges."
+version: 1.0.0
+definition:
+  version: "v1"
+  inputs:
+    - { id: repo, type: string, required: true, description: "Repository as owner/name" }
+    - { id: path, type: string, required: true, description: "Path of the manifest file inside the repository" }
+    - { id: content, type: string, required: true, description: "The whole manifest file with only the memory request and limit changed" }
+    - { id: workload, type: string, required: true, description: "namespace/kind/name, for the title" }
+    - { id: why, type: string, required: true, description: "One paragraph: the evidence and how the new values were picked" }
+  triggers:
+    - type: manual
+  tasks:
+    - id: open_pr
+      type: scm.github.cli
+      params:
+        integration_id: "{{ Install.integrations.repos.id }}"
+        # Inputs reach the script base64-encoded and are checked before use, so no
+        # input can change the commands that run.
+        command: |
+          set -euo pipefail
+          dec() { printf %s "$1" | base64 -d; }
+          REPO=$(dec '{{ Inputs.repo | b64encode }}')
+          FILE=$(dec '{{ Inputs.path | b64encode }}')
+          WORKLOAD=$(dec '{{ Inputs.workload | b64encode }}')
+          WHY=$(dec '{{ Inputs.why | b64encode }}')
+          [[ "$REPO" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]] || { echo "repo must be owner/name"; exit 1; }
+          [[ "$FILE" =~ ^[A-Za-z0-9_./-]+\.ya?ml$ && "$FILE" != /* && "$FILE" != *..* ]] || { echo "path must be a relative .yaml file"; exit 1; }
+          gh auth setup-git
+          gh repo clone "$REPO" work -- --depth 1 --quiet
+          cd work
+          [ -f "$FILE" ] || { echo "$FILE is not in $REPO"; exit 1; }
+          BRANCH="oom-fix/memory-$(date +%s)"
+          git checkout -q -b "$BRANCH"
+          dec '{{ Inputs.content | b64encode }}' > "$FILE"
+          [ -n "$(git status --porcelain)" ] || { echo "the new content is the same as the file"; exit 1; }
+          git -c user.name="QA Test Bee" -c user.email="broken_bee@bees.invalid" commit -q -am "Change memory for $WORKLOAD"
+          git push -q origin "$BRANCH"
+          BODY="Opened by QA Test Bee.
+
+          $WHY"
+          gh pr create --repo "$REPO" --head "$BRANCH" --title "Change memory for $WORKLOAD" --body "$BODY"
+  timeout: "10m"

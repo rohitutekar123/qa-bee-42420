@@ -1,0 +1,43 @@
+schema: bee/v1
+name: broken_bee
+display_name: Broken Bee
+version: 1.0.0
+author: { name: Nudgebee }
+
+install:
+  account_types: [k8s]                  # which kinds of account it can run on
+  scope: [namespaces]                   # what the admin can narrow it to inside each account
+  # The admin picks accounts (specific ones, or all k8s accounts including future ones)
+  # and namespaces (patterns, default all including future ones) on the install screen.
+
+integrations:
+  - id: repos
+    types: [github]
+    access: write                       # read, or write: what install grants on this integration
+    required: false
+    why: Opens a pull request that changes the memory limit in your manifests.
+  - id: tickets
+    types: [jira]
+    access: write
+    required: false
+    why: Files a ticket for the owning team when the cause is a leak.
+
+settings:
+  max_limit_increase_pct:
+    type: number
+    title: Largest increase
+    description: The largest memory limit increase the bee may propose, in percent.
+    default: 50
+  leak_ticket_project:
+    type: string
+    title: Leak ticket project
+    description: Jira project for leak tickets.
+
+output:                                 # summary, evidence and runs are built in
+  verdict: { enum: [limit_too_low, leak, config_or_code, unsure] }
+
+budget:
+  # Uncached input + output per run; input read from the prompt cache does not count.
+  max_tokens_per_run: 300000
+  max_runs_per_day: 100
+  timeout: 10m
