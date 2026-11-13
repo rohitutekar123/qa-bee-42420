@@ -1,0 +1,5 @@
+name: Steady memory at the limit for a week
+trigger: fixtures/oom-steady-at-limit.json
+expect:
+  verdict: limit_too_low
+  runs: [raise_memory_limit]

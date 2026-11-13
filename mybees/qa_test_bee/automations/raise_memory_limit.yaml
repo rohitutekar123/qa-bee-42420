@@ -1,0 +1,30 @@
+# One of the bee's automations: the agent can run it during its run. No risk line: the
+# platform computes the tier from the steps. The rest is today's automation template format.
+# Tier: unrestricted (cloud.k8s.cli): asks first everywhere unless the admin sets otherwise.
+summary: Set a new memory request and limit on one container.
+slug: qa_test_bee__raise_memory_limit
+name: "Raise a container memory limit"
+description: "Sets a new memory request and limit on one container and waits for the rollout."
+version: 1.0.0
+definition:
+  version: "v1"
+  inputs:
+    - { id: namespace, type: string, required: true, description: "Namespace of the workload" }
+    - { id: kind, type: string, required: true, description: "deployment or statefulset" }
+    - { id: name, type: string, required: true, description: "Workload name" }
+    - { id: container, type: string, required: true, description: "Container name" }
+    - { id: memory_request, type: string, required: true, description: "New memory request, e.g. 768Mi" }
+    - { id: memory_limit, type: string, required: true, description: "New memory limit, e.g. 1344Mi" }
+  triggers:
+    - type: manual
+  tasks:
+    - id: set
+      type: cloud.k8s.cli
+      params:
+        command: "kubectl set resources {{ Inputs.kind }}/{{ Inputs.name }} -n {{ Inputs.namespace }} -c {{ Inputs.container }} --requests=memory={{ Inputs.memory_request }} --limits=memory={{ Inputs.memory_limit }}"
+    - id: settle
+      type: cloud.k8s.cli
+      depends_on: ["set"]
+      params:
+        command: "kubectl rollout status {{ Inputs.kind }}/{{ Inputs.name }} -n {{ Inputs.namespace }} --timeout=300s"
+  timeout: "10m"
