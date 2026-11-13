@@ -1,0 +1,26 @@
+# One of the bee's automations: the agent can run it during its run. No risk line: the
+# platform computes the tier from the steps. The rest is today's automation template format.
+# Tier: read (tickets.create): runs automatically by default.
+summary: File a memory leak ticket for the owning team.
+slug: k8s_upgrade__open_leak_ticket
+name: "File a memory leak ticket"
+description: "Creates a ticket for the owning team with the growth rate and restart pattern."
+version: 1.0.0
+definition:
+  version: "v1"
+  inputs:
+    - { id: project_key, type: string, required: true, description: "Ticket project, from the leak_ticket_project setting" }
+    - { id: workload, type: string, required: true, description: "namespace/kind/name" }
+    - { id: summary, type: string, required: true, description: "One line: what leaks and how fast" }
+    - { id: details, type: string, required: true, description: "Growth rate, restart times, memory limit and links to the evidence" }
+  triggers:
+    - type: manual
+  tasks:
+    - id: create
+      type: tickets.create
+      params:
+        integration_id: "{{ Install.integrations.tickets.id }}"
+        project_key: "{{ Inputs.project_key }}"
+        title: "Memory leak suspected in {{ Inputs.workload }}"
+        description: "{{ Inputs.summary }}\n\n{{ Inputs.details }}"
+  timeout: "5m"

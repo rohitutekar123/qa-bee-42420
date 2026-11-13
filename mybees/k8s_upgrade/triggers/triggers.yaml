@@ -1,0 +1,7 @@
+triggers:
+  - type: event
+    params:
+      event_type: [pod_oom_killer_enricher, report_crash_loop]
+      on: event.created
+    dedupe: "{{ event.cluster }}/{{ event.subject_namespace }}/{{ event.subject_owner }}"
+    window: 6h                           # one decision per workload per 6 hours
