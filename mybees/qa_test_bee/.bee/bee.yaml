@@ -37,9 +37,6 @@ settings:
 output:                                 # summary, evidence and runs are built in
   verdict: { enum: [limit_too_low, leak, config_or_code, unsure] }
 
-report:
-  event_evidence: true
-
 budget:
   # Uncached input + output per run; input read from the prompt cache does not count.
   max_tokens_per_run: 300000
