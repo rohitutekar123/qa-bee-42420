@@ -1,8 +1,8 @@
 schema: bee/v1
 name: qa_test_bee                           # canonical: snake_case, fixed forever
 display_name: QA Test Bee
-version: 1.4.0
-description: NB-41915 - v1.4.0 requires ServiceNow.
+version: 1.5.0
+description: NB-41915 - v1.5.0 asks for more access (Prometheus write).
 author: { name: Nudgebee }
 
 install:
@@ -22,11 +22,11 @@ integrations:
     access: write
     required: false
     why: Files a ticket for the owning team when the cause is a leak.
-  - id: itsm
-    types: [servicenow]
-    access: read
-    required: true                      # NB-41915 test: no account has ServiceNow connected
-    why: Reads change records from ServiceNow.
+  - id: monitoring
+    types: [prometheus]
+    access: write
+    required: false
+    why: NB-41915 test - asks for more access than v1.3.0.
 
 settings:
   max_limit_increase_pct:
