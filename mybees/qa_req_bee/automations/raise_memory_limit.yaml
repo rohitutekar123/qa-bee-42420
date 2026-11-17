@@ -3,7 +3,7 @@
 # Tier: unrestricted (cloud.k8s.cli): asks first everywhere unless the admin sets otherwise.
 summary: Set a new memory request and limit on one container.
 slug: qa_req_bee__raise_memory_limit
-name: "Raise a container memory limit"
+name: "Raise a container memory limit (req bee)"
 description: "Sets a new memory request and limit on one container and waits for the rollout."
 version: 1.0.0
 definition:

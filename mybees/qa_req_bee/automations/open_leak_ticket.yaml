@@ -3,7 +3,7 @@
 # Tier: read (tickets.create): runs automatically by default.
 summary: File a memory leak ticket for the owning team.
 slug: qa_req_bee__open_leak_ticket
-name: "File a memory leak ticket"
+name: "File a memory leak ticket (req bee)"
 description: "Creates a ticket for the owning team with the growth rate and restart pattern."
 version: 1.0.0
 definition:

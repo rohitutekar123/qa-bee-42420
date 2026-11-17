@@ -6,7 +6,7 @@
 # It never merges.
 summary: Open a pull request that changes a memory limit in the workload's manifest.
 slug: qa_req_bee__open_limit_pr
-name: "Open a pull request that changes a memory limit"
+name: "Open a pull request that changes a memory limit (req bee)"
 description: "Commits the edited manifest file to a new branch and opens a pull request. Never merges."
 version: 1.0.0
 definition:
