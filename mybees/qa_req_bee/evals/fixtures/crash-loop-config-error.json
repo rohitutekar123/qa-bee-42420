@@ -1,0 +1,16 @@
+{
+  "event": {
+    "event_type": "report_crash_loop",
+    "title": "orders-api container is crash-looping",
+    "cluster": "example-prod",
+    "subject_namespace": "orders",
+    "subject_owner": "orders-api",
+    "starts_at": "2026-01-10T10:00:00Z"
+  },
+  "context": {
+    "memory_limit": "1Gi",
+    "memory_pattern": "peaks at 180Mi before each restart, flat for 7 days",
+    "last_termination": { "reason": "Error", "exit_code": 1 },
+    "last_log_lines": ["config: required key DATABASE_URL is not set", "exiting"]
+  }
+}

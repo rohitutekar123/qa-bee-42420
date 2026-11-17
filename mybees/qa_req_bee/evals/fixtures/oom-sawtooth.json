@@ -1,0 +1,14 @@
+{
+  "event": {
+    "event_type": "pod_oom_killer_enricher",
+    "title": "orders-api container killed: out of memory",
+    "cluster": "example-prod",
+    "subject_namespace": "orders",
+    "subject_owner": "orders-api",
+    "starts_at": "2026-01-10T10:00:00Z"
+  },
+  "context": {
+    "memory_limit": "1Gi",
+    "memory_pattern": "climbs from 300Mi to 1Gi over about 9 hours after every restart, 5 restarts in 2 days"
+  }
+}
