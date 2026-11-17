@@ -1,8 +1,8 @@
 schema: bee/v1
 name: qa_test_bee                           # canonical: snake_case, fixed forever
 display_name: QA Test Bee
-version: 1.2.0
-description: PROD TC5 - edited after install on prod.
+version: 1.3.0
+description: NB-41915 - v1.3.0 for update test.
 author: { name: Nudgebee }
 
 install:
